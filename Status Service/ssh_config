@@ -1,0 +1,5 @@
+ip of mesh node
+username
+password
+location of private key
+grep 10 run/hosts_olsr | awk '{print $1}'
