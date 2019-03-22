@@ -1,3 +1,0 @@
-import voipPhone
-
-voipPhone.initialize()
