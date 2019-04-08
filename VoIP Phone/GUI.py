@@ -11,8 +11,11 @@ class HamPhone:
         master.resizable(False, False)
         #master.overrideredirect(1) #Hides titlebar, use with Pi
         master.geometry("480x800")
+        style=ttk.Style()
+        style.theme_create("biggerTabs", settings={
+        "TNotebook.Tab": {"configure": {"padding": [10, 18], "font":('',22) },}})
+        style.theme_use("biggerTabs")
         
-
         self.n=ttk.Notebook(master)
         self.n.pack()
 
@@ -27,7 +30,7 @@ class HamPhone:
             
         self.current_number=tk.StringVar()
         self.current_number.set('')
-        self.call_number=tk.Label(self.numFrame, textvariable=self.current_number, width=20, bg='white',
+        self.call_number=tk.Label(self.numFrame, textvariable=self.current_number, width=23, bg='white',
                                   relief='sunken', height=2, font = ('' , 26))
         self.call_number.grid(row=0, column=0)
         
@@ -36,8 +39,8 @@ class HamPhone:
 
         self.Buttons=['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0']
 
-        button_ipadding_x = 44
-        button_ipadding_y = 19
+        button_ipadding_x = 54
+        button_ipadding_y = 13
         
         for i,n in enumerate(self.Buttons):
             self.num=tk.Button(self.numpad, text=n, command=lambda n=n:self.IPget(str(n)), relief=tk.GROOVE,
