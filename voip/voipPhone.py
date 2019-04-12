@@ -2,7 +2,7 @@ import os
 
 #starts linphone daemon
 def initialize():
-	os.system("linphonecsh init")
+	os.system("linphonecsh init -c ~/.linphonerc")
 
 #input ip address to call	
 def call(ip_address):

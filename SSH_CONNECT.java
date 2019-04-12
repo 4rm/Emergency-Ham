@@ -10,20 +10,23 @@ import com.jcraft.jsch.Session;
 public class SSH_CONNECT {
 
 
-	public static void main(String[] args) throws Exception{
-	    File ssh_config = new File("ssh_config");
-	    Scanner sc = new Scanner(ssh_config);
+	public static void main(String[] args){
+	    
+	    try{
+	    
+		File ssh_config = new File("ssh_config");
+		Scanner sc = new Scanner(ssh_config);
 
 	    
-	    String host = sc.nextLine();
-	    String user = sc.nextLine();
-	    String password = sc.nextLine();
-	    String keypassphrase = password;
-	    String privatekey = sc.nextLine();
-	    String command1= sc.nextLine();
-	    sc.close();
+		String host = sc.nextLine();
+		String user = sc.nextLine();
+		String password = sc.nextLine();
+		String keypassphrase = password;
+		String privatekey = sc.nextLine();
+		String command1= sc.nextLine();
+		sc.close();
+	    
 
-	    try{
 	    	
 	    	java.util.Properties config = new java.util.Properties(); 
 	    	config.put("StrictHostKeyChecking", "no");
@@ -56,7 +59,7 @@ public class SSH_CONNECT {
 	        channel.disconnect();
 	        session.disconnect();
 	    }catch(Exception e){
-	    	e.printStackTrace();
+	    	System.out.println("ERROR");
 	    }
 
 	}
