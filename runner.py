@@ -14,29 +14,43 @@ from threading import Thread
 
 def implementationMode():
     
-    
+    #following 3 lines should be the first thing called in the program
     t1 = Thread(target=status.server) #running server on another thread
-    t1.start()
+    t1.start() #starts thread
+    voipPhone.initialize() #starts linphone process
     
+    #posts message
+    status.postMsg('This is comp 1')
     
+    #prints array of nearby nodes
     nodeList = status.runClient()
     print(nodeList)
     
-    status.Emergency() #sets emergency status
+    #posts message
+    status.postMsg('computer 1')
     
+    #changes emergency status to 1
+    status.Emergency()
+    
+    #prints array of nearby nodes
     nodeList = status.runClient()
     print(nodeList)
     
+    #changes emergency status to 0
+    status.noEmergency()
     
-    
+    #prints array of nearby nodes
     nodeList = status.runClient()
     print(nodeList)
     
+    #prints array of nearby nodes
     nodeList = status.runClient()
     print(nodeList)
     
+    #the following code should be run before exiting out of the program
     status.terminateServer() #ends the listening socket on ther server
     t1.join() #joins the threads before terminating the program
+    voipPhone.end_linphone() #ends linphone process
 
 
 #this is just used for testing the code

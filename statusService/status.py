@@ -14,6 +14,9 @@ global localEmergencyStatus
 localEmergencyStatus = '0'
 
 
+global msg
+msg = ''
+
 #cleanly terminate server
 global endServer
 endServer = 0
@@ -26,6 +29,10 @@ def Emergency():
 def noEmergency():
     global localEmergencyStatus
     localEmergencyStatus = '0'
+    
+def postMsg(newMsg):
+    global msg
+    msg = newMsg
     
 def terminateServer():
     global endServer
@@ -44,15 +51,20 @@ def server():
     listeningSocket = socket.socket()
 
     port = 10000
+    listeningSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
     listeningSocket.bind(('', port))
 
     listeningSocket.listen(10)
-
+    
     global endServer
     while endServer==0:
         clientSocket, clientAddress = listeningSocket.accept()
         print('Connected to ' + str(clientAddress))
-        clientSocket.send(localEmergencyStatus.encode('ASCII'))
+        
+        msgToSend = localEmergencyStatus + ':' + msg
+        
+        #clientSocket.send(localEmergencyStatus.encode('ASCII'))
+        clientSocket.send(msgToSend.encode('ASCII'))        
         clientSocket.close()
         print('Connection closed to ' + str(clientAddress))
     
@@ -64,10 +76,13 @@ def client(remoteAddress):
     client = socket.socket()
     port = 10000
     client.connect((remoteAddress, port))
-    remoteEmergencyStatus = client.recv(1).decode('ASCII')
+    #remoteEmergencyStatus = client.recv(1).decode('ASCII')
+    receivedMsg = client.recv(50).decode('ASCII')
+    
     client.close()
     #print('Emergency status at remote location ' + remoteAddress + ' is ' + remoteEmergencyStatus)
-    return remoteAddress[:-1] + ':' + remoteEmergencyStatus
+    #return remoteAddress[:-1] + ':' + remoteEmergencyStatus
+    return remoteAddress[:-1] + ':' + receivedMsg
     
 
 #gets lists of client
