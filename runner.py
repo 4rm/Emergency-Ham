@@ -19,8 +19,19 @@ def implementationMode():
     t1.start() #starts thread
     voipPhone.initialize() #starts linphone process
     
+    #start with some default message/location data
+    
     #posts message
     status.postMsg('This is comp 1')
+    
+    #sets location info
+    status.setLocation('123 Main St')
+    
+    #saves message and location data using pickle
+    status.saveData()
+    
+    #loads message and location data
+    status.loadData()
     
     #prints array of nearby nodes
     nodeList = status.runClient()
@@ -38,6 +49,7 @@ def implementationMode():
     
     #changes emergency status to 0
     status.noEmergency()
+
     
     #prints array of nearby nodes
     nodeList = status.runClient()

@@ -3,7 +3,7 @@ import os
 import time
 import signal
 import sys
-
+import pickle
 
 
 
@@ -16,6 +16,9 @@ localEmergencyStatus = '0'
 
 global msg
 msg = ''
+
+global location
+location = ''
 
 #cleanly terminate server
 global endServer
@@ -34,6 +37,16 @@ def postMsg(newMsg):
     global msg
     msg = newMsg
     
+def getMsg():
+    return msg
+    
+def setLocation(newLocation):
+    global location
+    location = newLocation
+    
+def getLocation():
+    return location
+    
 def terminateServer():
     global endServer
     endServer = 1
@@ -42,6 +55,26 @@ def terminateServer():
     
     except:
         pass
+	
+def saveData():
+    lst2Save = [localEmergencyStatus, msg, location]
+    pickle_out = open("data.pickle", "wb")
+    pickle.dump(lst2Save, pickle_out)
+    pickle_out.close
+
+def loadData():
+    try:
+        pickle_in = open("data.pickle", "rb")
+        global localEmergencyStatus
+        global msg
+        global location
+        lst2Load = pickle.load(pickle_in)
+        localEmergencyStatus = lst2Load[0]
+        msg = lst2Load[1]
+        location = lst2Load[2]
+    
+    except:
+        print('No saved data found')
 
 
 #server function tells remote users
@@ -61,7 +94,10 @@ def server():
         clientSocket, clientAddress = listeningSocket.accept()
         print('Connected to ' + str(clientAddress))
         
-        msgToSend = localEmergencyStatus + ':' + msg
+        if localEmergencyStatus == '0':
+            msgToSend = localEmergencyStatus + ':' + msg
+        else:
+            msgToSend = localEmergencyStatus + ':' + location
         
         #clientSocket.send(localEmergencyStatus.encode('ASCII'))
         clientSocket.send(msgToSend.encode('ASCII'))        
