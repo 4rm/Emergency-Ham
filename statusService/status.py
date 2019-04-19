@@ -69,6 +69,7 @@ def server():
         print('Connection closed to ' + str(clientAddress))
     
     listeningSocket.close()
+    endServer = 0
 
 #client function gathers emergency status
 #of remote users
