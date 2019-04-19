@@ -3,13 +3,21 @@ import math
 import random
 import re
 from tkinter import ttk
+import os
+import time
+import signal
+import sys
+from statusService import status
+from voip import voipPhone
+from threading import Thread
+import threading
 
 class HamPhone:
     def __init__(self, master):
         self.master=master
         master.title('HamPhone')
         master.resizable(False, False)
-        master.overrideredirect(1)
+        #master.overrideredirect(1)
         master.geometry("480x800")
         style=ttk.Style()
         style.theme_create("biggerTabs", settings={
@@ -79,14 +87,14 @@ class HamPhone:
         self.getNodeList()
 
         self.refresh=tk.Button(self.f2, text=u"\uD83D\uDDD8", foreground='blue', font=('',20),
-                               takefocus=False, height=0, width=0, command=self.getNodeList)
+                               takefocus=False, height=0, width=0, command=lambda:self.ThreadTest())
         self.refresh.pack(side=tk.BOTTOM, anchor=tk.E)
         self.callstatus=0
         self.previouscallstatus=0
         self.callStatus()
 
         self.myLocation=tk.StringVar()
-        self.myLocation.set('test_address, test_state, test_zip')
+        self.myLocation.set(status.getLocation())
         self.LocLabel=tk.Label(self.f3, text="Node location:", font=('',20))
         self.LocLabel.grid(row=0, column=0, sticky=tk.W, pady=(10,0))
         self.currLocLabel=tk.Label(self.f3, textvariable=self.myLocation, font=('',14), fg='grey')
@@ -95,11 +103,11 @@ class HamPhone:
         self.LocData.grid(row=2, column=0, sticky=tk.W)
         self.Loc=tk.Entry(self.LocData)
         self.Loc.pack(side=tk.LEFT, anchor=tk.W)
-        self.locSet=tk.Button(self.LocData, text="SET", command=lambda:self.myLocation.set(self.Loc.get()))
+        self.locSet=tk.Button(self.LocData, text="SET", command=lambda:self.serverLocationSet())
         self.locSet.pack(side=tk.RIGHT)
 
         self.myStatus=tk.StringVar()
-        self.myStatus.set('test_message')
+        self.myStatus.set(status.getMsg())
         self.statusLabel=tk.Label(self.f3, text="My status:", font=('',20))
         self.statusLabel.grid(row=3, column=0, sticky=tk.W, pady=(25,0))
         self.currStatusLabel=tk.Label(self.f3, textvariable=self.myStatus, font=('', 14), fg='grey')
@@ -108,7 +116,7 @@ class HamPhone:
         self.statusData.grid(row=5, column=0, sticky=tk.W)
         self.Status=tk.Entry(self.statusData)
         self.Status.pack(side=tk.LEFT, anchor=tk.W)
-        self.statusSet=tk.Button(self.statusData, text="SET", command=lambda:self.myStatus.set(self.Status.get()))
+        self.statusSet=tk.Button(self.statusData, text="SET", command=lambda:self.serverStatusSet())
         self.statusSet.pack(side=tk.RIGHT)
 
         self.alertLabel=tk.Label(self.f3, text="Set alert:", font=('',20))
@@ -123,7 +131,7 @@ class HamPhone:
                                       command=lambda:self.yesAlert(), activeforeground="red3",
                                       activebackground="gray50")
         self.yesAlertButton.pack(side=tk.RIGHT, ipadx=15)
-        self.noAlert()
+        self.checkAlert()
 
         self.canvas = tk.Canvas(self.f3, width=460, height=180)  
         self.canvas.grid(row=8)  
@@ -132,14 +140,43 @@ class HamPhone:
 
         self.tag=tk.Label(self.f3, text="Emilio Garcia and Vinay Shah, Capstone 2019")
         self.tag.grid(row=9, pady=25)
+        self.t2 = Thread(target=self.getNodeList)
+        
+    def checkAlert(self):
+        if status.getEmergency() == '1':
+            self.yesAlert()
+        elif status.getEmergency() == '0':
+            self.noAlert()
+        
+    def ThreadTest(self):
+        if not self.t2.is_alive():
+            try:
+                self.t2.start()
+            except:
+                self.t2 = Thread(target=self.getNodeList)
+                self.t2.start()
+        
+    def serverStatusSet(self):
+        self.myStatus.set(self.Status.get())
+        status.postMsg(self.myStatus.get())
+        status.saveData()
+        
+    def serverLocationSet(self):
+        self.myLocation.set(self.Loc.get())
+        status.setLocation(self.myLocation.get())
+        status.saveData()
 
     def noAlert(self):
         self.noAlertButton.configure(relief=tk.SUNKEN, bg="gray70")
         self.yesAlertButton.configure(relief=tk.RAISED, bg="gray95")
+        status.noEmergency()
+        status.saveData()
 
     def yesAlert(self):
         self.noAlertButton.configure(relief=tk.RAISED, bg="gray95")
         self.yesAlertButton.configure(relief=tk.SUNKEN, bg="gray70")
+        status.Emergency()
+        status.saveData()
 
     def IPget(self, string):
         if len(self.current_number.get())<15:
@@ -189,7 +226,7 @@ class HamPhone:
 
     def getNodeList(self):
         self.nodes.destroy()
-        reports=self.testNodeList()
+        reports = status.runClient()
         self.nodes=tk.Frame(self.f2)
         self.nodes.pack()
 
@@ -222,13 +259,14 @@ class HamPhone:
             self.callButton.pack(side=tk.LEFT)
         self.border=tk.Frame(self.nodes, bg='black', height=2, width=480)
         self.border.pack(pady=5)
-        self.master.after(30000, lambda:self.getNodeList())
+        #self.master.after(30000, lambda:self.getNodeList())
 
     def callStatus(self):
         f=open("alert.txt","r")
         content=f.read()
         if content=="None" and self.callstatus!=2:
             print("No incoming calls")
+            print(threading.active_count())
             if self.previouscallstatus==1:
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
@@ -250,8 +288,15 @@ class HamPhone:
         self.current_number.set(IP)
 
     def destroy(self, event):
+        status.terminateServer() #ends the listening socket on ther server
+        t1.join() #joins the threads before terminating the program
+        voipPhone.end_linphone() #ends linphone process
         self.master.destroy()
         
+t1 = Thread(target=status.server) #running server on another thread
+t1.start() #starts thread
+voipPhone.initialize() #starts linphone process
+status.loadData()
 root=tk.Tk()
 test=HamPhone(root)
 root.mainloop()

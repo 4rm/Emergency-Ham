@@ -33,6 +33,9 @@ def noEmergency():
     global localEmergencyStatus
     localEmergencyStatus = '0'
     
+def getEmergency():
+    return localEmergencyStatus
+    
 def postMsg(newMsg):
     global msg
     msg = newMsg
