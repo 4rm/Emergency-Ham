@@ -2,15 +2,15 @@ import tkinter as tk
 import math
 import random
 import re
-from tkinter import ttk
 import os
 import time
 import signal
 import sys
+import threading
+from tkinter import ttk
 from statusService import status
 from voip import voipPhone
 from threading import Thread
-import threading
 
 class HamPhone:
     def __init__(self, master):
@@ -37,6 +37,12 @@ class HamPhone:
         self.f5.bind("<Visibility>", self.destroy)
 
         powerImg=tk.PhotoImage(file="power.gif")
+        self.green=tk.PhotoImage(file="green2.png")
+        self.green_small=self.green.subsample(3,3)
+        self.red=tk.PhotoImage(file="red2.png")
+        self.red_small=self.red.subsample(3,3)
+        self.refresh_image=tk.PhotoImage(file="refresh.png")
+        self.phone_image=tk.PhotoImage(file="phone.png")
         
         self.n.add(self.f1, text='Phone')
         self.n.add(self.f2, text='Nodes')
@@ -86,8 +92,8 @@ class HamPhone:
         self.nodes.pack()
         self.getNodeList()
 
-        self.refresh=tk.Button(self.f2, text=u"\uD83D\uDDD8", foreground='blue', font=('',20),
-                               takefocus=False, height=0, width=0, command=lambda:self.ThreadTest())
+        self.refresh=tk.Button(self.f2, image=self.refresh_image, foreground='blue', font=('',20),
+                               takefocus=False, height=40, width=40, command=lambda:self.ThreadTest())
         self.refresh.pack(side=tk.BOTTOM, anchor=tk.E)
         self.callstatus=0
         self.previouscallstatus=0
@@ -123,14 +129,14 @@ class HamPhone:
         self.alertLabel.grid(row=6, column=0, sticky=tk.W, pady=(25,5))
         self.alertButtonFrame=tk.Frame(self.f3)
         self.alertButtonFrame.grid(row=7, column=0, padx=35)
-        self.noAlertButton=tk.Button(self.alertButtonFrame, text=u"\uD83D\uDFD2", fg='green', font=('',80),
+        self.noAlertButton=tk.Button(self.alertButtonFrame, image=self.green, fg='green', font=('',80),
                                      command=lambda:self.noAlert(), activeforeground="dark green",
-                                     activebackground="gray50")
-        self.noAlertButton.pack(side=tk.LEFT, ipadx=15)
-        self.yesAlertButton=tk.Button(self.alertButtonFrame, text=u"\uD83D\uDFD2", fg='red', font=('',80),
+                                     activebackground="gray50", width=180, height=180)
+        self.noAlertButton.pack(side=tk.LEFT, ipadx=0)
+        self.yesAlertButton=tk.Button(self.alertButtonFrame, image=self.red, fg='red', font=('',80),
                                       command=lambda:self.yesAlert(), activeforeground="red3",
-                                      activebackground="gray50")
-        self.yesAlertButton.pack(side=tk.RIGHT, ipadx=15)
+                                      activebackground="gray50", width=180, height=180)
+        self.yesAlertButton.pack(side=tk.RIGHT, ipadx=0)
         self.checkAlert()
 
         self.canvas = tk.Canvas(self.f3, width=460, height=180)  
@@ -211,9 +217,9 @@ class HamPhone:
 
     def colorGet(self, status):
         if self.status=='0':
-            return 'green'
+            return self.green_small
         if self.status=='1':
-           return 'red'
+           return self.red_small
 
     def testNodeList(self):
         reports1=["192.168.1.1:0:All clear here"]
@@ -252,9 +258,9 @@ class HamPhone:
             self.controlFrame=tk.Frame(self.entryFrame)
             self.controlFrame.pack(side=tk.RIGHT)
             self.color=self.colorGet(self.status)
-            self.statusLight=tk.Label(self.controlFrame, text=u"\uD83D\uDFD2", font=('',30),fg=self.color)
+            self.statusLight=tk.Label(self.controlFrame, image=self.color, width=50, height=50)
             self.statusLight.pack(side=tk.RIGHT)
-            self.callButton=tk.Button(self.controlFrame, text=u"\uD83D\uDCDE", font=('', 24), takefocus=False,
+            self.callButton=tk.Button(self.controlFrame, image=self.phone_image, width=50, height=50, takefocus=False,
                                       command=lambda:self.nodeCall(self.IP))
             self.callButton.pack(side=tk.LEFT)
         self.border=tk.Frame(self.nodes, bg='black', height=2, width=480)
