@@ -206,7 +206,7 @@ class HamPhone:
 
     def hangup(self):
         print('Hanging up...')
-        voipPhone.hangup)_
+        voipPhone.hangup()
         self.callText.set('Call')
         self.call_button.configure(command=lambda:self.call(), bg='#90EE90', activebackground="sea green")
         self.previouscallstatus=self.callstatus
@@ -263,20 +263,20 @@ class HamPhone:
         content=voipPhone.callstatus():
         if content=="None" and self.callstatus!=2:
             print("No incoming calls")
-            print(threading.active_count())
             if self.previouscallstatus==1:
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
         if content="Inc" and self.callstatus!=2:
             self.previouscallstatus=self.callstatus
             self.callstatus=1
-            IP=content
-            print("Call from: " + IP)
+            print("Incoming Call")
             self.callText.set('Accept Call')
-            self.current_number.set(IP)
+            self.call_button.configure(command=lambda:voipPhone.answer())
             self.call_number.configure(fg='blue')
         if content="Ong":
             print("ongoing call")
+            self.callText.set('Hangup')
+            self.call_button.configure(command=lambda:self.hangup())
         self.master.after(1000, lambda:self.callStatus())
 
     def nodeCall(self,IP):
