@@ -20,6 +20,17 @@ def hangup():
 #end linphone daemon
 def end_linphone():
 	os.system("linphonecsh exit")
+
+#get call status
+def callstatus():
+        current_status=os.popen("linphonecsh generic calls").read()
+        if current_status=="No active call\n":
+                return "None"
+        elif current_status.split("|")[6].strip()=='IncomingReceived':
+                return "Inc"
+        elif current_status.split("|")[6].strip()=='StreamsRunning':
+                return "Ong"
+                        
 	
 
 

@@ -1,16 +1,16 @@
-import tkinter as tk
-import math
-import random
-import re
 import os
-import time
-import signal
+import re
 import sys
+import math
+import time
+import random
+import signal
 import threading
+import tkinter as tk
 from tkinter import ttk
-from statusService import status
 from voip import voipPhone
 from threading import Thread
+from statusService import status
 
 class HamPhone:
     def __init__(self, master):
@@ -192,7 +192,8 @@ class HamPhone:
 
     def call(self):
         if bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",self.current_number.get())):
-            print('linphonecsh dial sip:linphone@' + self.current_number.get())
+            print('Calling: ' + self.current_number.get())
+            voipPhone.call(self.current_number.get())
             self.current_number.set('Calling...')
             self.callText.set('Hang up')
             self.call_button.configure(command=lambda:self.hangup(), bg='red', activebackground="firebrick3")
@@ -202,10 +203,10 @@ class HamPhone:
             self.callstatus=2
         else:
             self.error()
-        
 
     def hangup(self):
         print('Hanging up...')
+        voipPhone.hangup)_
         self.callText.set('Call')
         self.call_button.configure(command=lambda:self.call(), bg='#90EE90', activebackground="sea green")
         self.previouscallstatus=self.callstatus
@@ -220,15 +221,6 @@ class HamPhone:
             return self.green_small
         if self.status=='1':
            return self.red_small
-
-    def testNodeList(self):
-        reports1=["192.168.1.1:0:All clear here"]
-        reports2=["192.168.1.1:0:All clear here","24.47.135.177:1:Send help! We're trapped!"]
-        reports3=["192.168.1.1:0:All clear here","24.47.135.177:1:Send help! We're trapped!",
-                  "42.76.145.188:1:Emergency! We require assistance, please call!"]
-        reports=[reports1, reports2, reports3]
-        randint=random.randrange(3)
-        return reports[randint]
 
     def getNodeList(self):
         self.nodes.destroy()
@@ -268,15 +260,14 @@ class HamPhone:
         #self.master.after(30000, lambda:self.getNodeList())
 
     def callStatus(self):
-        f=open("alert.txt","r")
-        content=f.read()
+        content=voipPhone.callstatus():
         if content=="None" and self.callstatus!=2:
             print("No incoming calls")
             print(threading.active_count())
             if self.previouscallstatus==1:
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
-        if bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",content)) and self.callstatus!=2:
+        if content="Inc" and self.callstatus!=2:
             self.previouscallstatus=self.callstatus
             self.callstatus=1
             IP=content
@@ -284,10 +275,9 @@ class HamPhone:
             self.callText.set('Accept Call')
             self.current_number.set(IP)
             self.call_number.configure(fg='blue')
-        if self.callstatus==2:
+        if content="Ong":
             print("ongoing call")
         self.master.after(1000, lambda:self.callStatus())
-        f.close()
 
     def nodeCall(self,IP):
         self.n.select(0)
