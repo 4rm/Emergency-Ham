@@ -253,7 +253,7 @@ class HamPhone:
             self.IPLabel=tk.Label(self.nameFrame, text=self.IP, font=('',16))
             self.IPLabel.pack(side=tk.TOP, anchor=tk.W)
             self.msgLabel=tk.Label(self.nameFrame, text=self.msg, font=('',12))
-            self.msgLabel.pack(side=tk.BOTTOM)
+            self.msgLabel.pack(side=tk.BOTTOM, anchor=tk.W)
             
             self.controlFrame=tk.Frame(self.entryFrame)
             self.controlFrame.pack(side=tk.RIGHT)
