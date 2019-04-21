@@ -287,7 +287,7 @@ class HamPhone:
             self.previouscallstatus=self.callstatus
             self.callstatus=2
             self.callText.set('Hangup')
-            self.call_button.configure(command=lambda:self.hangup())
+            self.call_button.configure(command=lambda:self.hangup(), bg='red', activebackground="firebrick3")
         self.master.after(3000, lambda:self.callStatus())
 
     def nodeCall(self,IP):
