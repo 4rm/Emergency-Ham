@@ -267,6 +267,11 @@ class HamPhone:
                 self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
+            if self.previouscallstatus==2:
+                voipPhone.hangup()
+                self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
+                self.callText.set('Call')
+                self.call_number.configure(fg='black')
         if content==1 and self.callstatus!=2:
             self.previouscallstatus=self.callstatus
             self.callstatus=1
