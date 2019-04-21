@@ -253,7 +253,7 @@ class HamPhone:
             self.statusLight=tk.Label(self.controlFrame, image=self.color, width=50, height=50)
             self.statusLight.pack(side=tk.RIGHT)
             self.callButton=tk.Button(self.controlFrame, image=self.phone_image, width=50, height=50, takefocus=False,
-                                      command=lambda:self.nodeCall(self.IP))
+                                      command=lambda x=self.IP:self.nodeCall(x))
             self.callButton.pack(side=tk.LEFT)
         self.border=tk.Frame(self.nodes, bg='black', height=2, width=480)
         self.border.pack(pady=5)
