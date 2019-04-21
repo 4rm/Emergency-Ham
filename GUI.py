@@ -260,20 +260,20 @@ class HamPhone:
         #self.master.after(30000, lambda:self.getNodeList())
 
     def callStatus(self):
-        content=voipPhone.callstatus():
+        content=voipPhone.callstatus()
         if content=="None" and self.callstatus!=2:
             print("No incoming calls")
             if self.previouscallstatus==1:
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
-        if content="Inc" and self.callstatus!=2:
+        if content=="Inc" and self.callstatus!=2:
             self.previouscallstatus=self.callstatus
             self.callstatus=1
             print("Incoming Call")
             self.callText.set('Accept Call')
             self.call_button.configure(command=lambda:voipPhone.answer())
             self.call_number.configure(fg='blue')
-        if content="Ong":
+        if content=="Ong":
             print("ongoing call")
             self.callText.set('Hangup')
             self.call_button.configure(command=lambda:self.hangup())
