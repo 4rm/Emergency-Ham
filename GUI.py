@@ -266,12 +266,12 @@ class HamPhone:
             self.callstatus=0
             print("No incoming calls")
             if self.previouscallstatus==1:
-                self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
+                self.call_button.configure(command=lambda:self.call())    
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
             if self.previouscallstatus==2:
                 voipPhone.hangup()
-                self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
+                self.call_button.configure(command=lambda:self.call())    
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
         if content==1 and self.callstatus!=2:

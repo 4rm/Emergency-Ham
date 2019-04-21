@@ -39,6 +39,8 @@ def callstatus():
                     return 1
             elif 'StreamsRunning' in current_status:
                     return 2
+            elif 'OutgoingRinging' in current_status:
+                    return 3
 		    
 	except:
 		return 0
