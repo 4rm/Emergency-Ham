@@ -262,6 +262,8 @@ class HamPhone:
     def callStatus(self):
         content=voipPhone.callstatus()
         if content==0 and self.callstatus!=2:
+            self.previouscallstatus=self.callstatus
+            self.callstatus=0
             print("No incoming calls")
             if self.previouscallstatus==1:
                 self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
@@ -281,6 +283,8 @@ class HamPhone:
             self.call_number.configure(fg='blue')
         if content==2:
             print("ongoing call")
+            self.previouscallstatus=self.callstatus
+            self.callstatus=2
             self.callText.set('Hangup')
             self.call_button.configure(command=lambda:self.hangup())
         self.master.after(3000, lambda:self.callStatus())
