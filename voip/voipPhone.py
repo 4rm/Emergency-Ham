@@ -24,7 +24,7 @@ def end_linphone():
 #get call status
 def callstatus():
         current_status=os.popen("linphonecsh generic calls").read()
-        if current_status=="No active call\n":
+        if current_status=="No active call.\n":
                 return "None"
         elif current_status.split("|")[6].strip()=='IncomingReceived':
                 return "Inc"
