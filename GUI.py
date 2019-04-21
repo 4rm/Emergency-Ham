@@ -15,8 +15,8 @@ from statusService import status
 class HamPhone:
     def __init__(self, master):
         self.master=master
-        master.title('HamPhone')
-        master.resizable(False, False)
+        #master.title('HamPhone')
+        #master.resizable(False, False)
         #master.overrideredirect(1)
         master.geometry("480x800")
         style=ttk.Style()
@@ -261,23 +261,23 @@ class HamPhone:
 
     def callStatus(self):
         content=voipPhone.callstatus()
-        if content=="None" and self.callstatus!=2:
+        if content==0 and self.callstatus!=2:
             print("No incoming calls")
             if self.previouscallstatus==1:
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
-        if content=="Inc" and self.callstatus!=2:
+        if content==1 and self.callstatus!=2:
             self.previouscallstatus=self.callstatus
             self.callstatus=1
             print("Incoming Call")
             self.callText.set('Accept Call')
             self.call_button.configure(command=lambda:voipPhone.answer())
             self.call_number.configure(fg='blue')
-        if content=="Ong":
+        if content==2:
             print("ongoing call")
             self.callText.set('Hangup')
             self.call_button.configure(command=lambda:self.hangup())
-        self.master.after(1000, lambda:self.callStatus())
+        self.master.after(3000, lambda:self.callStatus())
 
     def nodeCall(self,IP):
         self.n.select(0)
