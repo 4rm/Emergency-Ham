@@ -15,10 +15,10 @@ from statusService import status
 class HamPhone:
     def __init__(self, master):
         self.master=master
-        #master.title('HamPhone')
+        master.title('HamPhone')
         #master.resizable(False, False)
         #master.overrideredirect(1)
-        master.geometry("480x800")
+        #master.geometry("480x800")
         style=ttk.Style()
         style.theme_create("biggerTabs", settings={
             "TNotebook.Tab": {"configure": {"padding": [10, 18], "font":('',22) },}})
@@ -264,6 +264,7 @@ class HamPhone:
         if content==0 and self.callstatus!=2:
             print("No incoming calls")
             if self.previouscallstatus==1:
+                self.call_button.configure(command=lambda:voipPhone.call(self.IP))    
                 self.callText.set('Call')
                 self.call_number.configure(fg='black')
         if content==1 and self.callstatus!=2:
