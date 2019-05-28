@@ -1,6 +1,7 @@
 *Work in Progress*
 
-<img src="https://i.imgur.com/fc6Jq2b.png" alt="Emergency Ham Logo" align="right" style="float:right;width:421px;height:127px;"><br>
+<img src="https://i.imgur.com/fc6Jq2b.png" alt="Emergency Ham Logo" align="right" style="float:right;width:421px;height:127px;"><br><br>
+&nbsp;
 
 Emergency Ham is a rapid deployment ham radio mesh network that facilitates communication through VoIP, using affordable, repurposed equipment. Created for Rutgers ECE 2019 Capstone by Emilio Garcia and Vinay Shah. 10th place award recipient.
 
