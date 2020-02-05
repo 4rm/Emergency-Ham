@@ -1,5 +1,3 @@
-*Work in Progress*
-
 <img src="https://i.imgur.com/fc6Jq2b.png" alt="Emergency Ham Logo" align="right" style="float:right;width:421px;height:127px;"><br><br>
 &nbsp;
 
